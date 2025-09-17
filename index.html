@@ -6,73 +6,102 @@
 <title>Línea de tiempo — Programas UNICIENCIA</title>
 <style>
   :root{
-    --bg:#0f1724;
-    --accent:#6EE7B7;
-    --muted:#9aa6b2;
-    --glass: rgba(255,255,255,0.03);
+    --blue:#07114f;
+    --muted:#555;
+    --glass: rgba(0,0,0,0.03);
   }
-  body{
-    margin:0;padding:28px;
-    background:linear-gradient(180deg,#071126 0%,#021826 100%);
-    color:#e6eef6;
+  html,body{
+    margin:0;height:100%;
+    background:#ffffff;
+    color:#222;
     font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto;
   }
   .container{
-    max-width:1200px;margin:0 auto;
-    background:var(--glass);
-    border-radius:14px;padding:22px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.6);
-    border:1px solid rgba(255,255,255,0.03);
+    max-width:100%;height:100%;
+    margin:0 auto;padding:28px;
+    box-sizing:border-box;
   }
-  header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:18px}
-  h1{margin:0;font-size:22px}
-  p.lead{margin:4px 0 0;color:var(--muted);font-size:14px}
-  .filters{display:flex;gap:12px;flex-wrap:wrap}
-  .filters label{display:block;color:#fff;font-weight:600;font-size:13px;margin-bottom:4px}
+  /* Encabezado solo con filtros, centrados */
+  header{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-bottom:18px
+  }
+  .filters{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .filters label{
+    display:block;
+    color:var(--blue);
+    font-weight:600;
+    font-size:13px;
+    margin-bottom:4px;
+  }
+  /* Estilo de los select y botón */
   .filters select,.filters button{
-    background:var(--glass);border:1px solid rgba(255,255,255,0.06);
-    color:#fff;padding:8px 10px;border-radius:8px;font-size:13px;
+    background:var(--glass);
+    border:1px solid var(--blue);
+    color:var(--blue);
+    padding:8px 10px;
+    border-radius:8px;
+    font-size:13px;
   }
-  .filters button{cursor:pointer;background:linear-gradient(90deg,#7c3aed,#06b6d4);border:none}
-  .timeline-wrapper{display:flex;gap:20px;margin-top:18px}
-  .svg-wrap{flex:1;background:var(--glass);border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,0.02)}
-  svg{width:100%;height:420px;overflow:visible}
-  .legend{width:260px;background:var(--glass);border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.02);font-size:13px}
-  .legend h3{margin-top:0;color:#fff;font-size:15px}
-  .legend .item{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-  .dot{width:14px;height:14px;border-radius:4px;flex:0 0 14px}
+  .filters button{
+    cursor:pointer;
+    background:var(--blue);
+    color:#fff;
+    font-weight:600;
+  }
+  /* Contenedor del SVG con altura reducida */
+  .svg-wrap{
+    width:100%;
+    height:70vh;
+    background:var(--glass);
+    border-radius:12px;
+    border:1px solid rgba(0,0,0,0.05);
+    box-sizing:border-box;
+    padding:20px;
+  }
+  svg{width:100%;height:100%;overflow:visible}
+  /* Tooltip opcional (no usado actualmente) */
   .tooltip{
     position:fixed;pointer-events:none;
-    background:rgba(255,255,255,0.04);color:#eaf6ff;
+    background:rgba(0,0,0,0.75);
+    color:#fff;
     border-radius:8px;padding:10px;font-size:13px;
-    border:1px solid rgba(255,255,255,0.06);
+    border:1px solid rgba(0,0,0,0.2);
     box-shadow:0 10px 30px rgba(0,0,0,0.6);
     white-space:nowrap;display:none;z-index:1000;
   }
+  /* Animación de pulso en todos los nodos */
   .pulse{animation:pulse 1.6s infinite}
-  @keyframes pulse{0%{transform:scale(1);opacity:1}70%{transform:scale(1.9);opacity:0}100%{transform:scale(1.9);opacity:0}}
-  @media (max-width:980px){.timeline-wrapper{flex-direction:column}.legend{width:100%}svg{height:520px}}
-  footer{margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+  @keyframes pulse{
+    0%{transform:scale(1);opacity:1}
+    70%{transform:scale(1.9);opacity:0}
+    100%{transform:scale(1.9);opacity:0}
+  }
 </style>
 </head>
 <body>
 <div class="container">
+  <!-- Filtros centrados -->
   <header>
-    <div>
-      <h1>Línea de tiempo de Programas Académicos</h1>
-      <p class="lead">Resoluciones de aprobación por Campus, Nivel y Programa — UNICIENCIA</p>
-    </div>
     <div class="filters">
       <div>
-        <label for="campusFilter">Filtrar por Campus</label>
+        <label for="campusFilter">Campus</label>
         <select id="campusFilter"><option value="All">Todos</option></select>
       </div>
       <div>
-        <label for="levelFilter">Filtrar por Nivel</label>
+        <label for="levelFilter">Nivel</label>
         <select id="levelFilter"><option value="All">Todos</option></select>
       </div>
       <div>
-        <label for="programFilter">Filtrar por Programa</label>
+        <label for="programFilter">Programa</label>
         <select id="programFilter"><option value="All">Todos</option></select>
       </div>
       <div style="align-self:flex-end">
@@ -81,18 +110,13 @@
     </div>
   </header>
 
-  <div class="timeline-wrapper">
-    <div class="svg-wrap">
-      <svg id="timelineSVG"></svg>
-    </div>
-
-    <aside class="legend">
-      <h3>Leyenda de Campus</h3>
-      <div id="legendList"></div>
-    </aside>
+  <!-- Contenedor del gráfico -->
+  <div class="svg-wrap">
+    <svg id="timelineSVG"></svg>
   </div>
 
-  <footer>
+  <!-- Pie con años mostrados -->
+  <footer style="margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center">
     <div>Informe de gestión • UNICIENCIA</div>
     <div>Años mostrados: <span id="minYear"></span> — <span id="maxYear"></span></div>
   </footer>
@@ -101,7 +125,10 @@
 <div id="tooltip" class="tooltip"></div>
 
 <script>
-const rawData=[ /* mismo arreglo de datos que ya tenías */ 
+// ------------------------------
+// Datos de programas académicos
+// ------------------------------
+const rawData=[
   {program:"Administración de Empresas", campus:"Bucaramanga", level:"Pregrado", year:2015},
   {program:"Administración de Empresas", campus:"Bogotá", level:"Pregrado", year:2015},
   {program:"Contaduría Pública", campus:"Bogotá", level:"Pregrado", year:2015},
@@ -131,115 +158,183 @@ const rawData=[ /* mismo arreglo de datos que ya tenías */
   {program:"Derecho", campus:"Bucaramanga", level:"Pregrado", year:2025},
   {program:"Derecho", campus:"Tunja", level:"Pregrado", year:2025}
 ];
-const svg=document.getElementById('timelineSVG'),ns="http://www.w3.org/2000/svg";
-const years=rawData.map(d=>d.year),minYear=Math.min(...years),maxYear=Math.max(...years);
+
+// ------------------------------
+// Configuración básica de SVG
+// ------------------------------
+const svg=document.getElementById('timelineSVG'),
+      ns="http://www.w3.org/2000/svg";
+
+// Calcula rango de años
+const years=rawData.map(d=>d.year),
+      minYear=Math.min(...years),
+      maxYear=Math.max(...years);
+
+// Muestra en el pie de página
 document.getElementById('minYear').textContent=minYear;
 document.getElementById('maxYear').textContent=maxYear;
-function colorForCampus(c){return({Bogotá:"#06b6d4",Bucaramanga:"#7c3aed",Monteria:"#f97316",Tunja:"#ef4444"}[c])||"#60a5fa";}
-const padding={left:60,right:30},w=svg.clientWidth||1000,h=420,axisY=h/2;
+
+// Colores por campus
+function colorForCampus(c){
+  return({
+    Bucaramanga:"#007bff", // azul
+    Bogotá:"#7c3aed",      // morado
+    Tunja:"#f97316",       // naranja
+    Monteria:"#facc15"     // amarillo
+  }[c])||"#60a5fa";
+}
+
+// Márgenes laterales ampliados
+const padding={left:180,right:180},
+      w=svg.clientWidth||1000,
+      h=svg.clientHeight||450,
+      axisY=h/2;
+
+// Vista del SVG
 svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
-const xStart=padding.left,xEnd=w-padding.right,span=maxYear-minYear||1;
+
+// Escala horizontal según año
+const xStart=padding.left,
+      xEnd=w-padding.right,
+      span=maxYear-minYear||1;
 const xForYear=y=>xStart+((y-minYear)/span)*(xEnd-xStart);
-// eje
+
+// ------------------------------
+// Dibuja eje horizontal
+// ------------------------------
 const axis=document.createElementNS(ns,'line');
 axis.setAttribute('x1',xStart);axis.setAttribute('x2',xEnd);
 axis.setAttribute('y1',axisY);axis.setAttribute('y2',axisY);
-axis.setAttribute('stroke','rgba(255,255,255,0.06)');axis.setAttribute('stroke-width','2');
+axis.setAttribute('stroke','#555');axis.setAttribute('stroke-width','2');
 svg.appendChild(axis);
+
+// Marcas y etiquetas de año
 for(let y=minYear;y<=maxYear;y++){
   const t=document.createElementNS(ns,'line');
   t.setAttribute('x1',xForYear(y));t.setAttribute('x2',xForYear(y));
   t.setAttribute('y1',axisY-6);t.setAttribute('y2',axisY+6);
-  t.setAttribute('stroke','rgba(255,255,255,0.1)');
+  t.setAttribute('stroke','#888');
   svg.appendChild(t);
+
   const lbl=document.createElementNS(ns,'text');
   lbl.setAttribute('x',xForYear(y));lbl.setAttribute('y',axisY+24);
   lbl.setAttribute('text-anchor','middle');
   lbl.setAttribute('font-size','12');
-  lbl.setAttribute('fill','#9aa6b2');lbl.textContent=y;
+  lbl.setAttribute('fill','#333');
+  lbl.textContent=y;
   svg.appendChild(lbl);
 }
-// puntos
-const placed=[];
-rawData.forEach((d,i)=>{
+
+// ------------------------------
+// Coloca nodos de programas
+// ------------------------------
+const placed=[]; // para controlar apilamiento en un mismo año
+rawData.forEach(d=>{
   const x=xForYear(d.year);
+  // Detecta cuántos programas ya tiene este año para alternar arriba/abajo
   const sameYear=placed.filter(p=>p.year===d.year);
   const above=(sameYear.length%2===0);
   const stack=Math.floor(sameYear.length/2);
-  const gap=36;
-  const y=axisY+(above?-1:1)*(50+stack*gap);
+  const gap=40; // separación vertical
+  const y=axisY+(above?-1:1)*(60+stack*gap);
+
   const g=document.createElementNS(ns,'g');
   g.setAttribute('transform',`translate(${x},${y})`);
-  g.dataset.program=d.program;g.dataset.campus=d.campus;g.dataset.level=d.level;
+  g.dataset.program=d.program;
+  g.dataset.campus=d.campus;
+  g.dataset.level=d.level;
+
+  // Línea que conecta nodo con el eje
   const line=document.createElementNS(ns,'line');
   line.setAttribute('x1',0);line.setAttribute('x2',0);
   line.setAttribute('y1',above?10:-10);
   line.setAttribute('y2',above?(axisY-y-6):(axisY-y+6));
-  line.setAttribute('stroke','rgba(255,255,255,0.1)');
+  line.setAttribute('stroke','#aaa');
   g.appendChild(line);
+
+  // Tarjeta del programa
   const rect=document.createElementNS(ns,'rect');
-  rect.setAttribute('x',-110);rect.setAttribute('y',above?-56:10);
+  rect.setAttribute('x',-110);rect.setAttribute('y',above?-40:10);
   rect.setAttribute('rx',10);rect.setAttribute('ry',10);
-  rect.setAttribute('width',220);rect.setAttribute('height',64);
-  rect.setAttribute('fill','rgba(255,255,255,0.03)');
-  rect.setAttribute('stroke','rgba(255,255,255,0.06)');
+  rect.setAttribute('width',220);rect.setAttribute('height',40);
+  rect.setAttribute('fill','rgba(0,0,0,0.03)');
+  rect.setAttribute('stroke','#bbb');
   g.appendChild(rect);
+
+  // Franja de color del campus
   const stripe=document.createElementNS(ns,'rect');
-  stripe.setAttribute('x',-110);stripe.setAttribute('y',above?-56:10);
-  stripe.setAttribute('width',10);stripe.setAttribute('height',64);
+  stripe.setAttribute('x',-110);stripe.setAttribute('y',above?-40:10);
+  stripe.setAttribute('width',10);stripe.setAttribute('height',40);
   stripe.setAttribute('rx',10);stripe.setAttribute('ry',10);
   stripe.setAttribute('fill',colorForCampus(d.campus));
   g.appendChild(stripe);
+
+  // Texto con nombre del programa
   const prog=document.createElementNS(ns,'text');
-  prog.setAttribute('x',-90);prog.setAttribute('y',(above?-56:10)+22);
-  prog.setAttribute('fill','#fff');prog.setAttribute('font-size','13');prog.setAttribute('font-weight','600');
-  prog.textContent=d.program;g.appendChild(prog);
-  const meta=document.createElementNS(ns,'text');
-  meta.setAttribute('x',-90);meta.setAttribute('y',(above?-56:10)+44);
-  meta.setAttribute('fill','#a9b6c2');meta.setAttribute('font-size','12');
-  meta.textContent=`${d.campus} • ${d.level} • Resolución ${d.year}`;
-  g.appendChild(meta);
+  prog.setAttribute('x',-90);prog.setAttribute('y',(above?-40:10)+25);
+  prog.setAttribute('fill','#000');prog.setAttribute('font-size','13');prog.setAttribute('font-weight','600');
+  prog.textContent=d.program;
+  g.appendChild(prog);
+
+  // Círculo central
   const c=document.createElementNS(ns,'circle');
-  c.setAttribute('r',8);c.setAttribute('fill',colorForCampus(d.campus));
-  c.setAttribute('stroke','rgba(255,255,255,0.06)');c.setAttribute('stroke-width','1.5');
+  c.setAttribute('r',8);
+  c.setAttribute('fill',colorForCampus(d.campus));
+  c.setAttribute('stroke','#ccc');
+  c.setAttribute('stroke-width','1.5');
   g.appendChild(c);
+
+  // Círculo pulsante (ahora para todos)
   const pulse=document.createElementNS(ns,'circle');
-  pulse.setAttribute('r',12);pulse.setAttribute('fill',colorForCampus(d.campus));
-  pulse.setAttribute('opacity','0.12');pulse.setAttribute('class','pulse');
+  pulse.setAttribute('r',12);
+  pulse.setAttribute('fill',colorForCampus(d.campus));
+  pulse.setAttribute('opacity','0.12');
+  pulse.setAttribute('class','pulse');
   g.appendChild(pulse);
+
   svg.appendChild(g);
   placed.push({year:d.year,node:g});
 });
-// leyenda
-const legend=document.getElementById('legendList');
-[...new Set(rawData.map(d=>d.campus))].forEach(c=>{
-  const div=document.createElement('div');div.className='item';
-  const dot=document.createElement('div');dot.className='dot';dot.style.background=colorForCampus(c);
-  const label=document.createElement('div');label.textContent=c;label.style.color='#fff';label.style.fontWeight='600';
-  div.append(dot,label);legend.appendChild(div);
-});
-// filtros
+
+// ------------------------------
+// Filtros interactivos
+// ------------------------------
 function fillSelect(sel,arr){
+  // Llena cada filtro con valores únicos y ordenados
   arr=[...new Set(arr)].sort();
-  arr.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o);});
+  arr.forEach(v=>{
+    const o=document.createElement('option');
+    o.value=v;o.textContent=v;
+    sel.appendChild(o);
+  });
 }
 fillSelect(document.getElementById('campusFilter'),rawData.map(d=>d.campus));
 fillSelect(document.getElementById('levelFilter'),rawData.map(d=>d.level));
 fillSelect(document.getElementById('programFilter'),rawData.map(d=>d.program));
+
+// Botón para restablecer
 document.getElementById('reset').onclick=()=>{
-  campusFilter.value=levelFilter.value=programFilter.value='All';applyFilters();
+  campusFilter.value=levelFilter.value=programFilter.value='All';
+  applyFilters();
 };
+
+// Aplica filtros al cambiar cualquier select
 [campusFilter,levelFilter,programFilter].forEach(el=>el.onchange=applyFilters);
+
+// Función que muestra/oculta nodos según filtros
 function applyFilters(){
-  const c=campusFilter.value,l=levelFilter.value,p=programFilter.value;
+  const c=campusFilter.value,
+        l=levelFilter.value,
+        p=programFilter.value;
   svg.querySelectorAll('g').forEach(g=>{
     const ok=(c==='All'||g.dataset.campus===c)&&
              (l==='All'||g.dataset.level===l)&&
              (p==='All'||g.dataset.program===p);
-    g.style.opacity= ok? '1':'0'; // ahora totalmente transparente
-    g.style.pointerEvents= ok? 'auto':'none';
+    g.style.opacity= ok? '1':'0'; // oculta visualmente los que no cumplen
+    g.style.pointerEvents= ok? 'auto':'none'; // evita interacción en ocultos
   });
 }
 </script>
 </body>
 </html>
+
