@@ -3,519 +3,76 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Línea de tiempo — Informe de gestión (UNICIENCIA)</title>
+<title>Línea de tiempo — Bucaramanga</title>
 <style>
-  :root{
-    --bg:#0f1724;
-    --card:#0b1220;
-    --accent:#6EE7B7;
-    --muted:#9aa6b2;
-    --glass: rgba(255,255,255,0.03);
-  }
-  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-  body{
-    background: linear-gradient(180deg, #071126 0%, #021826 100%);
-    color:#e6eef6;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    padding:28px;
-  }
-
-  .container{
-    max-width:1200px;
-    margin:0 auto;
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:14px;
-    padding:22px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    border: 1px solid rgba(255,255,255,0.03);
-  }
-
-  header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:18px;
-    margin-bottom:18px;
-  }
-  .title{
-    display:flex;
-    gap:14px;
-    align-items:center;
-  }
-  .logo{
-    width:72px;height:72px;border-radius:10px;background:linear-gradient(135deg,#0ea5a4,#7c3aed);
-    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;
-    box-shadow: 0 6px 18px rgba(124,58,237,0.18);
-  }
-  h1{margin:0;font-size:20px;letter-spacing:0.2px}
-  p.lead{margin:0;color:var(--muted);font-size:13px}
-
-  .timeline-wrapper{
-    display:flex;
-    gap:20px;
-    margin-top:18px;
-  }
-  .svg-wrap{
-    flex:1;
-    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-    border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,0.02);
-  }
-
+  body{background:#071126;color:#e6eef6;font-family:Inter,system-ui,sans-serif;margin:0;padding:28px}
   svg{width:100%;height:420px;overflow:visible}
-
-  .legend{
-    width:260px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.02);
-    color:var(--muted);
-    font-size:13px;
-    height:420px;
-  }
-  .legend h3{margin:0 0 10px 0;color:#fff;font-size:14px;}
-  .legend .item{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-  .dot{width:14px;height:14px;border-radius:4px;flex:0 0 14px}
-
-  .tooltip{
-    position:fixed;pointer-events:none;
-    background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-    color:#eaf6ff;border-radius:8px;padding:10px;font-size:13px;border:1px solid rgba(255,255,255,0.06);
-    box-shadow:0 10px 30px rgba(0,0,0,0.6);transform:translate(-50%,-120%);white-space:nowrap;z-index:1000;
-    display:none;
-  }
-
-  .badge{
-    display:inline-block;padding:6px 10px;border-radius:999px;font-weight:600;font-size:12px;background:rgba(255,255,255,0.03);
-    border:1px solid rgba(255,255,255,0.03);color:var(--accent)
-  }
-
-  /* Pulse animation for active markers */
-  .pulse {
-    animation: pulse 1.6s infinite;
-  }
-  @keyframes pulse {
-    0% { transform: scale(1); opacity:1; }
-    70% { transform: scale(1.9); opacity:0; }
-    100% { transform: scale(1.9); opacity:0; }
-  }
-
-  /* Small responsive adjustments */
-  @media (max-width:980px){
-    .timeline-wrapper{flex-direction:column}
-    .legend{width:100%}
-    svg{height:520px}
-  }
-
-  .controls{display:flex;gap:10px;align-items:center}
-  .controls select, .controls button{
-    background:var(--glass);border:1px solid rgba(255,255,255,0.04);color:var(--muted);
-    padding:8px 10px;border-radius:8px;font-size:13px;
-  }
-  .controls button{cursor:pointer;color:#fff;background:linear-gradient(90deg,#7c3aed,#06b6d4);border:none}
-  footer{margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+  .tooltip{position:fixed;pointer-events:none;background:rgba(255,255,255,0.04);
+    color:#eaf6ff;border-radius:8px;padding:10px;font-size:13px;
+    border:1px solid rgba(255,255,255,0.06);transform:translate(-50%,-120%);
+    white-space:nowrap;display:none;z-index:1000}
 </style>
 </head>
 <body>
-<div class="container" role="main" aria-labelledby="page-title">
-  <header>
-    <div class="title">
-      <div class="logo">UNI</div>
-      <div>
-        <h1 id="page-title">Línea de tiempo — Programas y Años de Resolución</h1>
-        <p class="lead">Visualización basada en el documento adjunto. (Programas – campus – año). :contentReference[oaicite:1]{index=1}</p>
-      </div>
-    </div>
-
-    <div class="controls" aria-hidden="false">
-      <label style="color:var(--muted);font-size:12px">Filtrar campus</label>
-      <select id="campusFilter">
-        <option value="All">Todos</option>
-      </select>
-      <button id="reset">Restablecer</button>
-    </div>
-  </header>
-
-  <div class="timeline-wrapper">
-    <div class="svg-wrap" id="chartCard" aria-label="Gráfico de línea de tiempo">
-      <svg id="timelineSVG" role="img" aria-label="Línea de tiempo de programas"></svg>
-    </div>
-
-    <aside class="legend" aria-label="Leyenda">
-      <h3>Leyenda — Campus</h3>
-      <div id="legendList"></div>
-      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
-      <div style="color:var(--muted);font-size:13px">
-        <div style="margin-bottom:8px"><span class="badge">Pregrado</span> Programas de pregrado</div>
-        <div><span class="badge" style="background:rgba(255,255,255,0.06);color:#ffd796">Posgrado</span> Programas de posgrado</div>
-      </div>
-    </aside>
-  </div>
-
-  <footer>
-    <div>Creado para informe de gestión • UNICIENCIA</div>
-    <div style="color:var(--muted);font-size:12px">Años mostrados: <span id="minYear"></span> — <span id="maxYear"></span></div>
-  </footer>
-</div>
-
-<div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
-
+<h1>Línea de tiempo — Campus Bucaramanga</h1>
+<svg id="timeline"></svg>
+<div id="tooltip" class="tooltip"></div>
 <script>
-/*
-  Datos extraídos del archivo adjunto (Programas UNICIENCIA).
-  Cada objeto: { program, campus, level, year }
-  Fuente: archivo adjunto. :contentReference[oaicite:2]{index=2}
-*/
-const rawData = [
-  {program:"Administración de Empresas", campus:"Bucaramanga", level:"Pregrado", year:2015},
-  {program:"Administración de Empresas", campus:"Bogotá", level:"Pregrado", year:2015},
-  {program:"Contaduría Pública", campus:"Bogotá", level:"Pregrado", year:2015},
-  {program:"Administración de Empresas", campus:"Monteria", level:"Pregrado", year:2015},
-  {program:"Ingeniería de Sistemas", campus:"Bucaramanga", level:"Pregrado", year:2016},
-  {program:"Diseño de modas", campus:"Bogotá", level:"Pregrado", year:2016},
-  {program:"Publicidad", campus:"Bogotá", level:"Pregrado", year:2017},
-  {program:"Economía", campus:"Bogotá", level:"Pregrado", year:2018},
-  {program:"Ingeniería Industrial", campus:"Bogotá", level:"Pregrado", year:2018},
-  {program:"Derecho", campus:"Bogotá", level:"Pregrado", year:2018},
-  {program:"Especialización en Derecho Constitucional", campus:"Bucaramanga", level:"Posgrado", year:2019},
-  {program:"Ingeniería de Sistemas", campus:"Bogotá", level:"Pregrado", year:2019},
-  {program:"Ingeniería Industrial", campus:"Bucaramanga", level:"Pregrado", year:2019},
-  {program:"Derecho", campus:"Tunja", level:"Pregrado", year:2019},
-  {program:"Derecho", campus:"Bucaramanga", level:"Pregrado", year:2022},
-  {program:"Administración de Empresas", campus:"Bucaramanga", level:"Pregrado", year:2022},
-  {program:"Administración de Empresas", campus:"Bogotá", level:"Pregrado", year:2022},
-  {program:"Contaduría Pública", campus:"Bucaramanga", level:"Pregrado", year:2022},
-  {program:"Ingeniería de Sistemas", campus:"Bucaramanga", level:"Pregrado", year:2024},
-  {program:"Especialización en Gerencia Tributaria", campus:"Bucaramanga", level:"Posgrado", year:2025},
-  {program:"Especialización en Gerencia Tributaria", campus:"Bogotá", level:"Posgrado", year:2025},
-  {program:"Publicidad", campus:"Bogotá", level:"Pregrado", year:2025},
-  {program:"Especialización en Gerencia del Talento Humano", campus:"Bucaramanga", level:"Posgrado", year:2025},
-  {program:"Especialización en Gerencia del Talento Humano", campus:"Bogotá", level:"Posgrado", year:2025},
-  {program:"Especialización en Gerencia del Talento Humano", campus:"Tunja", level:"Posgrado", year:2025},
-  {program:"Derecho", campus:"Bogotá", level:"Pregrado", year:2025},
-  {program:"Derecho", campus:"Bucaramanga", level:"Pregrado", year:2025},
-  {program:"Derecho", campus:"Tunja", level:"Pregrado", year:2025}
+const data=[
+  {program:"Administración de Empresas",year:2015},
+  {program:"Ingeniería de Sistemas",year:2016},
+  {program:"Ingeniería Industrial",year:2019},
+  {program:"Derecho",year:2022},
+  {program:"Administración de Empresas",year:2022},
+  {program:"Contaduría Pública",year:2022},
+  {program:"Ingeniería de Sistemas",year:2024},
+  {program:"Especialización en Derecho Constitucional",year:2019},
+  {program:"Especialización en Gerencia Tributaria",year:2025},
+  {program:"Especialización en Gerencia del Talento Humano",year:2025},
+  {program:"Derecho",year:2025}
 ];
-
-// Calcula años min y max
-const years = rawData.map(d=>d.year);
-const minYear = Math.min(...years);
-const maxYear = Math.max(...years);
-
-// Mostrar años en footer
-document.getElementById('minYear').textContent = minYear;
-document.getElementById('maxYear').textContent = maxYear;
-
-// Generar paleta de colores por campus
-function colorForCampus(campus){
-  const map = {
-    "Bogotá":"#06b6d4",
-    "Bucaramanga":"#7c3aed",
-    "Monteria":"#f97316",
-    "Tunja":"#ef4444"
-  };
-  return map[campus] || '#60a5fa';
-}
-
-// Preparar el contenedor SVG
-const svg = document.getElementById('timelineSVG');
-const padding = {left:60,right:30,top:60,bottom:60};
-const width = svg.clientWidth || 1000;
-const height = 420;
-svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-
-// Escala X para años
-const xStart = padding.left;
-const xEnd = width - padding.right;
-const yearSpan = maxYear - minYear || 1;
-function xForYear(y){
-  return xStart + ((y - minYear)/yearSpan) * (xEnd - xStart);
-}
-
-// Dibujar eje
-const axisY = height/2;
-const ns = "http://www.w3.org/2000/svg";
-
-// Clear any children
-while (svg.firstChild) svg.removeChild(svg.firstChild);
-
-// Draw gradient background subtle
-const defs = document.createElementNS(ns,'defs');
-const grad = document.createElementNS(ns,'linearGradient'); grad.id='g1'; grad.setAttribute('x1','0'); grad.setAttribute('x2','0'); grad.setAttribute('y1','0'); grad.setAttribute('y2','1');
-const stop1 = document.createElementNS(ns,'stop'); stop1.setAttribute('offset','0'); stop1.setAttribute('stop-color','#083047'); stop1.setAttribute('stop-opacity','0.0');
-const stop2 = document.createElementNS(ns,'stop'); stop2.setAttribute('offset','1'); stop2.setAttribute('stop-color','#021826'); stop2.setAttribute('stop-opacity','0.0');
-grad.appendChild(stop1); grad.appendChild(stop2);
-defs.appendChild(grad);
-svg.appendChild(defs);
-
-// Axis line
-const axis = document.createElementNS(ns,'line');
-axis.setAttribute('x1', xStart);
-axis.setAttribute('x2', xEnd);
-axis.setAttribute('y1', axisY);
-axis.setAttribute('y2', axisY);
-axis.setAttribute('stroke','rgba(255,255,255,0.06)');
-axis.setAttribute('stroke-width','2');
-svg.appendChild(axis);
-
-// ticks and labels for each year between min and max
-for(let y=minYear;y<=maxYear;y++){
-  const x = xForYear(y);
-  const t = document.createElementNS(ns,'line');
-  t.setAttribute('x1',x); t.setAttribute('x2',x);
-  t.setAttribute('y1',axisY-8); t.setAttribute('y2',axisY+8);
-  t.setAttribute('stroke','rgba(255,255,255,0.04)');
-  t.setAttribute('stroke-width','1');
+const svg=document.getElementById('timeline'),ns="http://www.w3.org/2000/svg";
+const years=data.map(d=>d.year),min=Math.min(...years),max=Math.max(...years);
+const pad=60,w=svg.clientWidth||1000,h=420,axis=h/2;
+svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+function x(y){return pad+((y-min)/(max-min))*(w-2*pad)}
+const axisLine=document.createElementNS(ns,'line');
+axisLine.setAttribute('x1',pad);axisLine.setAttribute('x2',w-pad);
+axisLine.setAttribute('y1',axis);axisLine.setAttribute('y2',axis);
+axisLine.setAttribute('stroke','rgba(255,255,255,0.2)');
+svg.appendChild(axisLine);
+for(let y=min;y<=max;y++){
+  const t=document.createElementNS(ns,'line');
+  t.setAttribute('x1',x(y));t.setAttribute('x2',x(y));
+  t.setAttribute('y1',axis-6);t.setAttribute('y2',axis+6);
+  t.setAttribute('stroke','rgba(255,255,255,0.15)');
   svg.appendChild(t);
-
-  const lbl = document.createElementNS(ns,'text');
-  lbl.setAttribute('x',x); lbl.setAttribute('y',axisY+28);
+  const lbl=document.createElementNS(ns,'text');
+  lbl.setAttribute('x',x(y));lbl.setAttribute('y',axis+20);
   lbl.setAttribute('text-anchor','middle');
-  lbl.setAttribute('font-size','12');
-  lbl.setAttribute('fill','#9aa6b2');
-  lbl.textContent = y;
-  svg.appendChild(lbl);
+  lbl.setAttribute('fill','#9aa6b2');lbl.setAttribute('font-size','12');
+  lbl.textContent=y;svg.appendChild(lbl);
 }
-
-// Group data by year to create smooth polyline connecting average vertical positions per year (for visual nice curve)
-const yearsGrouped = {};
-rawData.forEach(item=>{
-  yearsGrouped[item.year] = yearsGrouped[item.year] || [];
-  yearsGrouped[item.year].push(item);
-});
-const polyPoints = [];
-for(let y=minYear;y<=maxYear;y++){
-  const x = xForYear(y);
-  const items = yearsGrouped[y] || [];
-  // vertical displacement - stack items above and below axis alternately
-  const offset = items.length ? Math.min(40, 14 + items.length*6) : 0;
-  // create slight wave to make line more dynamic
-  const ypos = axisY - ( ( ( (y - minYear) % 2 === 0) ? 1 : -1 ) * (offset/6) );
-  polyPoints.push(`${x},${ypos}`);
-}
-
-// Draw smooth polyline
-const poly = document.createElementNS(ns,'polyline');
-poly.setAttribute('points', polyPoints.join(' '));
-poly.setAttribute('fill','none');
-poly.setAttribute('stroke','rgba(110,231,183,0.12)');
-poly.setAttribute('stroke-width','8');
-poly.setAttribute('stroke-linecap','round');
-poly.setAttribute('stroke-linejoin','round');
-svg.appendChild(poly);
-
-// Add faint stroke overlay for glossy effect
-const poly2 = document.createElementNS(ns,'polyline');
-poly2.setAttribute('points', polyPoints.join(' '));
-poly2.setAttribute('fill','none');
-poly2.setAttribute('stroke','rgba(255,255,255,0.04)');
-poly2.setAttribute('stroke-width','1.5');
-poly2.setAttribute('stroke-linecap','round');
-svg.appendChild(poly2);
-
-// Place markers (one per program) with vertical jitter to avoid overlaps
-const placed = [];
-rawData.forEach((d, idx) => {
-  const x = xForYear(d.year);
-
-  // compute vertical stacking for items at same year and campus to avoid overlap
-  const sameYear = placed.filter(p=>p.year===d.year);
-  // alternate placing above and below
-  const above = (sameYear.length % 2 === 0);
-  const stackIndex = Math.floor(sameYear.length/2);
-  const gap = 36;
-  const y = axisY + (above ? -1 : 1) * (50 + stackIndex * gap);
-
-  // marker group
-  const g = document.createElementNS(ns,'g');
-  g.setAttribute('transform', `translate(${x},${y})`);
-  g.setAttribute('data-program', d.program);
-  g.setAttribute('data-campus', d.campus);
-  g.setAttribute('data-level', d.level);
-  g.setAttribute('data-year', d.year);
-
-  // connector line to axis
-  const line = document.createElementNS(ns,'line');
-  line.setAttribute('x1',0); line.setAttribute('x2',0);
-  line.setAttribute('y1', (above ? 10 : -10)); line.setAttribute('y2', (above ? (axisY - y - 6) : (axisY - y + 6)));
-  line.setAttribute('stroke','rgba(255,255,255,0.03)');
-  line.setAttribute('stroke-dasharray','2,3');
-  line.setAttribute('stroke-width','1');
+data.forEach((d,i)=>{
+  const g=document.createElementNS(ns,'g');
+  const cx=x(d.year),cy=axis+(i%2?80:-80);
+  const line=document.createElementNS(ns,'line');
+  line.setAttribute('x1',cx);line.setAttribute('x2',cx);
+  line.setAttribute('y1',axis);line.setAttribute('y2',cy);
+  line.setAttribute('stroke','rgba(255,255,255,0.1)');
   g.appendChild(line);
-
-  // main rect card for label
-  const rect = document.createElementNS(ns,'rect');
-  rect.setAttribute('x', -220/2);
-  rect.setAttribute('y', above ? -56 : 10);
-  rect.setAttribute('rx',10);
-  rect.setAttribute('ry',10);
-  rect.setAttribute('width',220);
-  rect.setAttribute('height',64);
-  rect.setAttribute('fill','rgba(255,255,255,0.02)');
-  rect.setAttribute('stroke','rgba(255,255,255,0.03)');
-  rect.setAttribute('filter','none');
-  g.appendChild(rect);
-
-  // campus color stripe
-  const stripe = document.createElementNS(ns,'rect');
-  stripe.setAttribute('x', -220/2);
-  stripe.setAttribute('y', above ? -56 : 10);
-  stripe.setAttribute('rx',10);
-  stripe.setAttribute('ry',10);
-  stripe.setAttribute('width',10);
-  stripe.setAttribute('height',64);
-  stripe.setAttribute('fill', colorForCampus(d.campus));
-  g.appendChild(stripe);
-
-  // program text
-  const prog = document.createElementNS(ns,'text');
-  prog.setAttribute('x', -220/2 + 20);
-  prog.setAttribute('y', (above ? -56 : 10) + 22);
-  prog.setAttribute('font-size','13');
-  prog.setAttribute('fill','#ffffff');
-  prog.setAttribute('font-weight','600');
-  prog.textContent = d.program;
-  g.appendChild(prog);
-
-  // campus & level
-  const meta = document.createElementNS(ns,'text');
-  meta.setAttribute('x', -220/2 + 20);
-  meta.setAttribute('y', (above ? -56 : 10) + 44);
-  meta.setAttribute('font-size','12');
-  meta.setAttribute('fill','#a9b6c2');
-  meta.textContent = `${d.campus} • ${d.level} • Resolución ${d.year}`;
-  g.appendChild(meta);
-
-  // circular marker (colored)
-  const marker = document.createElementNS(ns,'circle');
-  marker.setAttribute('cx', 0);
-  marker.setAttribute('cy', 0);
-  marker.setAttribute('r', 8);
-  marker.setAttribute('fill', colorForCampus(d.campus));
-  marker.setAttribute('stroke', 'rgba(255,255,255,0.06)');
-  marker.setAttribute('stroke-width', 1.5);
-  g.appendChild(marker);
-
-  // outer pulse
-  const pulse = document.createElementNS(ns,'circle');
-  pulse.setAttribute('cx',0);
-  pulse.setAttribute('cy',0);
-  pulse.setAttribute('r',12);
-  pulse.setAttribute('fill', colorForCampus(d.campus));
-  pulse.setAttribute('opacity', '0.12');
-  pulse.setAttribute('class','pulse');
-  g.appendChild(pulse);
-
-  // hover interactions
-  g.style.cursor = 'pointer';
-  g.addEventListener('mouseenter', showTooltip);
-  g.addEventListener('mousemove', moveTooltip);
-  g.addEventListener('mouseleave', hideTooltip);
-  g.addEventListener('click', highlightCard);
-
+  const c=document.createElementNS(ns,'circle');
+  c.setAttribute('cx',cx);c.setAttribute('cy',cy);
+  c.setAttribute('r',8);c.setAttribute('fill','#7c3aed');
+  g.appendChild(c);
+  const t=document.createElementNS(ns,'text');
+  t.setAttribute('x',cx+12);t.setAttribute('y',cy+4);
+  t.setAttribute('fill','#fff');t.setAttribute('font-size','13');
+  t.textContent=d.program;
+  g.appendChild(t);
   svg.appendChild(g);
-  placed.push({year:d.year, campus:d.campus, node:g});
 });
-
-// Build legend with unique campuses
-const legendContainer = document.getElementById('legendList');
-const uniqueCampuses = [...new Set(rawData.map(d=>d.campus))];
-uniqueCampuses.forEach(c=>{
-  const div = document.createElement('div');
-  div.className='item';
-  const dot = document.createElement('div');
-  dot.className='dot';
-  dot.style.background = colorForCampus(c);
-  const label = document.createElement('div');
-  label.textContent = c;
-  label.style.color = '#e6eef6';
-  label.style.fontWeight = '600';
-  div.appendChild(dot); div.appendChild(label);
-  legendContainer.appendChild(div);
-});
-
-// Populate campus filter
-const campusFilter = document.getElementById('campusFilter');
-["All", ...uniqueCampuses].forEach(c=>{
-  const opt = document.createElement('option');
-  opt.value = c; opt.textContent = c;
-  campusFilter.appendChild(opt);
-});
-campusFilter.addEventListener('change', applyFilter);
-document.getElementById('reset').addEventListener('click', ()=>{
-  campusFilter.value = 'All';
-  applyFilter();
-});
-
-// Tooltip functions
-const tooltip = document.getElementById('tooltip');
-function showTooltip(e){
-  const g = e.currentTarget;
-  const program = g.getAttribute('data-program');
-  const campus = g.getAttribute('data-campus');
-  const level = g.getAttribute('data-level');
-  const year = g.getAttribute('data-year');
-  tooltip.innerHTML = `<strong style="display:block;margin-bottom:4px">${program}</strong>
-                       <div style="font-size:12px;color:#c7d6df">${campus} • ${level}</div>
-                       <div style="font-size:12px;color:#9fb7c6;margin-top:6px">Resolución: <strong>${year}</strong></div>`;
-  tooltip.style.display='block';
-  tooltip.setAttribute('aria-hidden','false');
-}
-function moveTooltip(e){
-  const x = e.clientX;
-  const y = e.clientY;
-  tooltip.style.left = (x + 12) + 'px';
-  tooltip.style.top = (y - 12) + 'px';
-}
-function hideTooltip(e){
-  tooltip.style.display='none';
-  tooltip.setAttribute('aria-hidden','true');
-}
-function highlightCard(e){
-  const g = e.currentTarget;
-  // flash border of rect
-  const rect = g.querySelector('rect');
-  rect.setAttribute('stroke','rgba(255,255,255,0.12)');
-  setTimeout(()=>rect.setAttribute('stroke','rgba(255,255,255,0.03)'),700);
-}
-
-// Apply campus filter
-function applyFilter(){
-  const val = campusFilter.value;
-  const nodes = svg.querySelectorAll('g');
-  nodes.forEach(g=>{
-    const campus = g.getAttribute('data-campus');
-    if(val === 'All' || campus === val){
-      g.style.opacity = '1';
-      g.style.pointerEvents = 'auto';
-    } else {
-      g.style.opacity = '0.12';
-      g.style.pointerEvents = 'none';
-    }
-  });
-}
-
-// Accessibility: keyboard navigation — focus highlights
-const allGroups = svg.querySelectorAll('g');
-allGroups.forEach((g, i)=>{
-  g.setAttribute('tabindex','0');
-  g.addEventListener('focus', (e)=> {
-    const rect = g.querySelector('rect'); rect.setAttribute('stroke','rgba(255,255,255,0.14)');
-  });
-  g.addEventListener('blur', (e)=> {
-    const rect = g.querySelector('rect'); rect.setAttribute('stroke','rgba(255,255,255,0.03)');
-  });
-});
-
-// Add subtle entrance animation
-svg.style.opacity = 0;
-setTimeout(()=>{ svg.style.transition='opacity 800ms ease'; svg.style.opacity = 1; }, 80);
-
-// Optional: function to export current view as PNG (could be extended)
-function exportPNG(){
-  alert('Función de exportación no implementada en este demo. Se puede agregar si lo deseas.');
-}
-
-// End script
 </script>
 </body>
 </html>
+
