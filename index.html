@@ -115,226 +115,489 @@
     <svg id="timelineSVG"></svg>
   </div>
 
-  <!-- Pie con años mostrados -->
-  <footer style="margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center">
-    <div>Informe de gestión • UNICIENCIA</div>
-    <div>Años mostrados: <span id="minYear"></span> — <span id="maxYear"></span></div>
-  </footer>
-</div>
+    <!-- Pie con años y convenciones -->
 
-<div id="tooltip" class="tooltip"></div>
+    <footer style="margin-top:16px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;">
 
-<script>
-// ------------------------------
-// Datos de programas académicos
-// ------------------------------
-const rawData=[
-  {program:"Administración de Empresas", campus:"Bucaramanga", level:"Pregrado", year:2015},
-  {program:"Administración de Empresas", campus:"Bogotá", level:"Pregrado", year:2015},
-  {program:"Contaduría Pública", campus:"Bogotá", level:"Pregrado", year:2015},
-  {program:"Administración de Empresas", campus:"Monteria", level:"Pregrado", year:2015},
-  {program:"Ingeniería de Sistemas", campus:"Bucaramanga", level:"Pregrado", year:2016},
-  {program:"Diseño de modas", campus:"Bogotá", level:"Pregrado", year:2016},
-  {program:"Publicidad", campus:"Bogotá", level:"Pregrado", year:2017},
-  {program:"Economía", campus:"Bogotá", level:"Pregrado", year:2018},
-  {program:"Ingeniería Industrial", campus:"Bogotá", level:"Pregrado", year:2018},
-  {program:"Derecho", campus:"Bogotá", level:"Pregrado", year:2018},
-  {program:"Especialización en Derecho Constitucional", campus:"Bucaramanga", level:"Posgrado", year:2019},
-  {program:"Ingeniería de Sistemas", campus:"Bogotá", level:"Pregrado", year:2019},
-  {program:"Ingeniería Industrial", campus:"Bucaramanga", level:"Pregrado", year:2019},
-  {program:"Derecho", campus:"Tunja", level:"Pregrado", year:2019},
-  {program:"Derecho", campus:"Bucaramanga", level:"Pregrado", year:2022},
-  {program:"Administración de Empresas", campus:"Bucaramanga", level:"Pregrado", year:2022},
-  {program:"Administración de Empresas", campus:"Bogotá", level:"Pregrado", year:2022},
-  {program:"Contaduría Pública", campus:"Bucaramanga", level:"Pregrado", year:2022},
-  {program:"Ingeniería de Sistemas", campus:"Bucaramanga", level:"Pregrado", year:2024},
-  {program:"Especialización en Gerencia Tributaria", campus:"Bucaramanga", level:"Posgrado", year:2025},
-  {program:"Especialización en Gerencia Tributaria", campus:"Bogotá", level:"Posgrado", year:2025},
-  {program:"Publicidad", campus:"Bogotá", level:"Pregrado", year:2025},
-  {program:"Especialización en Gerencia del Talento Humano", campus:"Bucaramanga", level:"Posgrado", year:2025},
-  {program:"Especialización en Gerencia del Talento Humano", campus:"Bogotá", level:"Posgrado", year:2025},
-  {program:"Especialización en Gerencia del Talento Humano", campus:"Tunja", level:"Posgrado", year:2025},
-  {program:"Derecho", campus:"Bogotá", level:"Pregrado", year:2025},
-  {program:"Derecho", campus:"Bucaramanga", level:"Pregrado", year:2025},
-  {program:"Derecho", campus:"Tunja", level:"Pregrado", year:2025}
-];
+      <div id="conventions" style="flex-basis:100%;order:3"></div>
 
-// ------------------------------
-// Configuración básica de SVG
-// ------------------------------
-const svg=document.getElementById('timelineSVG'),
-      ns="http://www.w3.org/2000/svg";
+      <div style="order:1"></div>
 
-// Calcula rango de años
-const years=rawData.map(d=>d.year),
-      minYear=Math.min(...years),
-      maxYear=Math.max(...years);
+      <div style="order:2;text-align:right;flex-grow:1">Años mostrados: <span id="minYear"></span> — <span id="maxYear"></span></div>
 
-// Muestra en el pie de página
-document.getElementById('minYear').textContent=minYear;
-document.getElementById('maxYear').textContent=maxYear;
+    </footer>
 
-// Colores por campus
-function colorForCampus(c){
-  return({
-    Bucaramanga:"#007bff", // azul
-    Bogotá:"#7c3aed",      // morado
-    Tunja:"#f97316",       // naranja
-    Monteria:"#facc15"     // amarillo
-  }[c])||"#60a5fa";
-}
+  </div>
 
-// Márgenes laterales ampliados
-const padding={left:180,right:180},
-      w=svg.clientWidth||1000,
-      h=svg.clientHeight||450,
-      axisY=h/2;
+  
 
-// Vista del SVG
-svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  <div id="tooltip" class="tooltip"></div>
 
-// Escala horizontal según año
-const xStart=padding.left,
-      xEnd=w-padding.right,
-      span=maxYear-minYear||1;
-const xForYear=y=>xStart+((y-minYear)/span)*(xEnd-xStart);
+  
 
-// ------------------------------
-// Dibuja eje horizontal
-// ------------------------------
-const axis=document.createElementNS(ns,'line');
-axis.setAttribute('x1',xStart);axis.setAttribute('x2',xEnd);
-axis.setAttribute('y1',axisY);axis.setAttribute('y2',axisY);
-axis.setAttribute('stroke','#555');axis.setAttribute('stroke-width','2');
-svg.appendChild(axis);
+  <script>
 
-// Marcas y etiquetas de año
-for(let y=minYear;y<=maxYear;y++){
-  const t=document.createElementNS(ns,'line');
-  t.setAttribute('x1',xForYear(y));t.setAttribute('x2',xForYear(y));
-  t.setAttribute('y1',axisY-6);t.setAttribute('y2',axisY+6);
-  t.setAttribute('stroke','#888');
-  svg.appendChild(t);
+  // ------------------------------
 
-  const lbl=document.createElementNS(ns,'text');
-  lbl.setAttribute('x',xForYear(y));lbl.setAttribute('y',axisY+24);
-  lbl.setAttribute('text-anchor','middle');
-  lbl.setAttribute('font-size','12');
-  lbl.setAttribute('fill','#333');
-  lbl.textContent=y;
-  svg.appendChild(lbl);
-}
+  // Datos de programas académicos
 
-// ------------------------------
-// Coloca nodos de programas
-// ------------------------------
-const placed=[]; // para controlar apilamiento en un mismo año
-rawData.forEach(d=>{
-  const x=xForYear(d.year);
-  // Detecta cuántos programas ya tiene este año para alternar arriba/abajo
-  const sameYear=placed.filter(p=>p.year===d.year);
-  const above=(sameYear.length%2===0);
-  const stack=Math.floor(sameYear.length/2);
-  const gap=40; // separación vertical
-  const y=axisY+(above?-1:1)*(60+stack*gap);
+  // ------------------------------
 
-  const g=document.createElementNS(ns,'g');
-  g.setAttribute('transform',`translate(${x},${y})`);
-  g.dataset.program=d.program;
-  g.dataset.campus=d.campus;
-  g.dataset.level=d.level;
+  const rawData=[
 
-  // Línea que conecta nodo con el eje
-  const line=document.createElementNS(ns,'line');
-  line.setAttribute('x1',0);line.setAttribute('x2',0);
-  line.setAttribute('y1',above?10:-10);
-  line.setAttribute('y2',above?(axisY-y-6):(axisY-y+6));
-  line.setAttribute('stroke','#aaa');
-  g.appendChild(line);
+    {program:"Administración de Empresas", campus:"Bucaramanga", level:"Pregrado", year:2015},
 
-  // Tarjeta del programa
-  const rect=document.createElementNS(ns,'rect');
-  rect.setAttribute('x',-110);rect.setAttribute('y',above?-40:10);
-  rect.setAttribute('rx',10);rect.setAttribute('ry',10);
-  rect.setAttribute('width',220);rect.setAttribute('height',40);
-  rect.setAttribute('fill','rgba(0,0,0,0.03)');
-  rect.setAttribute('stroke','#bbb');
-  g.appendChild(rect);
+    {program:"Administración de Empresas", campus:"Bogotá", level:"Pregrado", year:2015},
 
-  // Franja de color del campus
-  const stripe=document.createElementNS(ns,'rect');
-  stripe.setAttribute('x',-110);stripe.setAttribute('y',above?-40:10);
-  stripe.setAttribute('width',10);stripe.setAttribute('height',40);
-  stripe.setAttribute('rx',10);stripe.setAttribute('ry',10);
-  stripe.setAttribute('fill',colorForCampus(d.campus));
-  g.appendChild(stripe);
+    {program:"Contaduría Pública", campus:"Bogotá", level:"Pregrado", year:2015},
 
-  // Texto con nombre del programa
-  const prog=document.createElementNS(ns,'text');
-  prog.setAttribute('x',-90);prog.setAttribute('y',(above?-40:10)+25);
-  prog.setAttribute('fill','#000');prog.setAttribute('font-size','13');prog.setAttribute('font-weight','600');
-  prog.textContent=d.program;
-  g.appendChild(prog);
+    {program:"Administración de Empresas", campus:"Monteria", level:"Pregrado", year:2015},
 
-  // Círculo central
-  const c=document.createElementNS(ns,'circle');
-  c.setAttribute('r',8);
-  c.setAttribute('fill',colorForCampus(d.campus));
-  c.setAttribute('stroke','#ccc');
-  c.setAttribute('stroke-width','1.5');
-  g.appendChild(c);
+    {program:"Ingeniería de Sistemas", campus:"Bucaramanga", level:"Pregrado", year:2016},
 
-  // Círculo pulsante (ahora para todos)
-  const pulse=document.createElementNS(ns,'circle');
-  pulse.setAttribute('r',12);
-  pulse.setAttribute('fill',colorForCampus(d.campus));
-  pulse.setAttribute('opacity','0.12');
-  pulse.setAttribute('class','pulse');
-  g.appendChild(pulse);
+    {program:"Diseño de modas", campus:"Bogotá", level:"Pregrado", year:2016},
 
-  svg.appendChild(g);
-  placed.push({year:d.year,node:g});
-});
+    {program:"Publicidad", campus:"Bogotá", level:"Pregrado", year:2017},
 
-// ------------------------------
-// Filtros interactivos
-// ------------------------------
-function fillSelect(sel,arr){
-  // Llena cada filtro con valores únicos y ordenados
-  arr=[...new Set(arr)].sort();
-  arr.forEach(v=>{
-    const o=document.createElement('option');
-    o.value=v;o.textContent=v;
-    sel.appendChild(o);
+    {program:"Economía", campus:"Bogotá", level:"Pregrado", year:2018},
+
+    {program:"Ingeniería Industrial", campus:"Bogotá", level:"Pregrado", year:2018},
+
+    {program:"Derecho", campus:"Bogotá", level:"Pregrado", year:2018},
+
+    {program:"Especialización en Derecho Constitucional", campus:"Bucaramanga", level:"Posgrado", year:2019},
+
+    {program:"Ingeniería de Sistemas", campus:"Bogotá", level:"Pregrado", year:2019},
+
+    {program:"Ingeniería Industrial", campus:"Bucaramanga", level:"Pregrado", year:2019},
+
+    {program:"Derecho", campus:"Tunja", level:"Pregrado", year:2019},
+
+    {program:"Derecho", campus:"Bucaramanga", level:"Pregrado", year:2022},
+
+    {program:"Administración de Empresas", campus:"Bucaramanga", level:"Pregrado", year:2022},
+
+    {program:"Administración de Empresas", campus:"Bogotá", level:"Pregrado", year:2022},
+
+    {program:"Contaduría Pública", campus:"Bucaramanga", level:"Pregrado", year:2022},
+
+    {program:"Ingeniería de Sistemas", campus:"Bucaramanga", level:"Pregrado", year:2024},
+
+    {program:"Especialización en Gerencia Tributaria", campus:"Bucaramanga", level:"Posgrado", year:2025},
+
+    {program:"Especialización en Gerencia Tributaria", campus:"Bogotá", level:"Posgrado", year:2025},
+
+    {program:"Publicidad", campus:"Bogotá", level:"Pregrado", year:2025},
+
+    {program:"Especialización en Gerencia del Talento Humano", campus:"Bucaramanga", level:"Posgrado", year:2025},
+
+    {program:"Especialización en Gerencia del Talento Humano", campus:"Bogotá", level:"Posgrado", year:2025},
+
+    {program:"Especialización en Gerencia del Talento Humano", campus:"Tunja", level:"Posgrado", year:2025},
+
+    {program:"Derecho", campus:"Bogotá", level:"Pregrado", year:2025},
+
+    {program:"Derecho", campus:"Bucaramanga", level:"Pregrado", year:2025},
+
+    {program:"Derecho", campus:"Tunja", level:"Pregrado", year:2025}
+
+  ];
+
+  
+
+  // ------------------------------
+
+  // Configuración básica de SVG
+
+  // ------------------------------
+
+  const svg=document.getElementById('timelineSVG'),
+
+        ns="http://www.w3.org/2000/svg";
+
+  
+
+  // Calcula rango de años
+
+  const years=rawData.map(d=>d.year),
+
+        minYear=Math.min(...years),
+
+        maxYear=Math.max(...years);
+
+  
+
+  // Muestra en el pie de página
+
+  document.getElementById('minYear').textContent=minYear;
+
+  document.getElementById('maxYear').textContent=maxYear;
+
+  
+
+  // --- Definición centralizada de colores ---
+
+  const campusColors = {
+
+      Bucaramanga:"#007bff", // azul
+
+      Bogotá:"#7c3aed",      // morado
+
+      Tunja:"#f97316",       // naranja
+
+      Monteria:"#facc15"     // amarillo
+
+  };
+
+  
+
+  // Colores por campus (función ahora usa la constante)
+
+  function colorForCampus(c){
+
+    return campusColors[c] || "#60a5fa";
+
+  }
+
+  
+
+  // Márgenes laterales ampliados
+
+  const padding={left:180,right:180},
+
+        w=svg.clientWidth||1000,
+
+        h=svg.clientHeight||450,
+
+        axisY=h/2;
+
+  
+
+  // Vista del SVG
+
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+
+  
+
+  // Escala horizontal según año
+
+  const xStart=padding.left,
+
+        xEnd=w-padding.right,
+
+        span=maxYear-minYear||1;
+
+  const xForYear=y=>xStart+((y-minYear)/span)*(xEnd-xStart);
+
+  
+
+  // ------------------------------
+
+  // Dibuja eje horizontal
+
+  // ------------------------------
+
+  const axis=document.createElementNS(ns,'line');
+
+  axis.setAttribute('x1',xStart);axis.setAttribute('x2',xEnd);
+
+  axis.setAttribute('y1',axisY);axis.setAttribute('y2',axisY);
+
+  axis.setAttribute('stroke','#555');axis.setAttribute('stroke-width','2');
+
+  svg.appendChild(axis);
+
+  
+
+  // Marcas y etiquetas de año
+
+  for(let y=minYear;y<=maxYear;y++){
+
+    const t=document.createElementNS(ns,'line');
+
+    t.setAttribute('x1',xForYear(y));t.setAttribute('x2',xForYear(y));
+
+    t.setAttribute('y1',axisY-6);t.setAttribute('y2',axisY+6);
+
+    t.setAttribute('stroke','#888');
+
+    svg.appendChild(t);
+
+  
+
+    const lbl=document.createElementNS(ns,'text');
+
+    lbl.setAttribute('x',xForYear(y));lbl.setAttribute('y',axisY+24);
+
+    lbl.setAttribute('text-anchor','middle');
+
+    lbl.setAttribute('font-size','12');
+
+    lbl.setAttribute('fill','#333');
+
+    lbl.textContent=y;
+
+    svg.appendChild(lbl);
+
+  }
+
+  
+
+  // ------------------------------
+
+  // Coloca nodos de programas
+
+  // ------------------------------
+
+  const placed=[]; // para controlar apilamiento en un mismo año
+
+  rawData.forEach(d=>{
+
+    const x=xForYear(d.year);
+
+    // Detecta cuántos programas ya tiene este año para alternar arriba/abajo
+
+    const sameYear=placed.filter(p=>p.year===d.year);
+
+    const above=(sameYear.length%2===0);
+
+    const stack=Math.floor(sameYear.length/2);
+
+    const gap=40; // separación vertical
+
+    const y=axisY+(above?-1:1)*(60+stack*gap);
+
+  
+
+    const g=document.createElementNS(ns,'g');
+
+    g.setAttribute('transform',`translate(${x},${y})`);
+
+    g.dataset.program=d.program;
+
+    g.dataset.campus=d.campus;
+
+    g.dataset.level=d.level;
+
+  
+
+    // Línea que conecta nodo con el eje
+
+    const line=document.createElementNS(ns,'line');
+
+    line.setAttribute('x1',0);line.setAttribute('x2',0);
+
+    line.setAttribute('y1',above?10:-10);
+
+    line.setAttribute('y2',above?(axisY-y-6):(axisY-y+6));
+
+    line.setAttribute('stroke','#aaa');
+
+    g.appendChild(line);
+
+  
+
+    // Tarjeta del programa
+
+    const rect=document.createElementNS(ns,'rect');
+
+    rect.setAttribute('x',-110);rect.setAttribute('y',above?-40:10);
+
+    rect.setAttribute('rx',10);rect.setAttribute('ry',10);
+
+    rect.setAttribute('width',220);rect.setAttribute('height',40);
+
+    rect.setAttribute('fill','rgba(0,0,0,0.03)');
+
+    rect.setAttribute('stroke','#bbb');
+
+    g.appendChild(rect);
+
+  
+
+    // Franja de color del campus
+
+    const stripe=document.createElementNS(ns,'rect');
+
+    stripe.setAttribute('x',-110);stripe.setAttribute('y',above?-40:10);
+
+    stripe.setAttribute('width',10);stripe.setAttribute('height',40);
+
+    stripe.setAttribute('rx',10);stripe.setAttribute('ry',10);
+
+    stripe.setAttribute('fill',colorForCampus(d.campus));
+
+    g.appendChild(stripe);
+
+  
+
+    // Texto con nombre del programa
+
+    const prog=document.createElementNS(ns,'text');
+
+    prog.setAttribute('x',-90);prog.setAttribute('y',(above?-40:10)+25);
+
+    prog.setAttribute('fill','#000');prog.setAttribute('font-size','13');prog.setAttribute('font-weight','600');
+
+    prog.textContent=d.program;
+
+    g.appendChild(prog);
+
+  
+
+    // Círculo central
+
+    const c=document.createElementNS(ns,'circle');
+
+    c.setAttribute('r',8);
+
+    c.setAttribute('fill',colorForCampus(d.campus));
+
+    c.setAttribute('stroke','#ccc');
+
+    c.setAttribute('stroke-width','1.5');
+
+    g.appendChild(c);
+
+  
+
+    // Círculo pulsante (ahora para todos)
+
+    const pulse=document.createElementNS(ns,'circle');
+
+    pulse.setAttribute('r',12);
+
+    pulse.setAttribute('fill',colorForCampus(d.campus));
+
+    pulse.setAttribute('opacity','0.12');
+
+    pulse.setAttribute('class','pulse');
+
+    g.appendChild(pulse);
+
+  
+
+    svg.appendChild(g);
+
+    placed.push({year:d.year,node:g});
+
   });
-}
-fillSelect(document.getElementById('campusFilter'),rawData.map(d=>d.campus));
-fillSelect(document.getElementById('levelFilter'),rawData.map(d=>d.level));
-fillSelect(document.getElementById('programFilter'),rawData.map(d=>d.program));
 
-// Botón para restablecer
-document.getElementById('reset').onclick=()=>{
-  campusFilter.value=levelFilter.value=programFilter.value='All';
-  applyFilters();
-};
+  
 
-// Aplica filtros al cambiar cualquier select
-[campusFilter,levelFilter,programFilter].forEach(el=>el.onchange=applyFilters);
+  // ------------------------------
 
-// Función que muestra/oculta nodos según filtros
-function applyFilters(){
-  const c=campusFilter.value,
-        l=levelFilter.value,
-        p=programFilter.value;
-  svg.querySelectorAll('g').forEach(g=>{
-    const ok=(c==='All'||g.dataset.campus===c)&&
-             (l==='All'||g.dataset.level===l)&&
-             (p==='All'||g.dataset.program===p);
-    g.style.opacity= ok? '1':'0'; // oculta visualmente los que no cumplen
-    g.style.pointerEvents= ok? 'auto':'none'; // evita interacción en ocultos
-  });
-}
-</script>
-</body>
-</html>
+  // Genera la leyenda de convenciones
+
+  // ------------------------------
+
+  const legendContainer = document.getElementById('conventions');
+
+  let legendHTML = '<div style="display:flex; flex-wrap:wrap; gap:15px; align-items:center; justify-content:start;">';
+
+  legendHTML += '<span style="font-weight:600; font-size:13px; color:var(--blue);">Campus:</span>';
+
+  for (const campus in campusColors) {
+
+      legendHTML += `
+
+          <div style="display:flex; align-items:center; gap:6px; font-size:12px;">
+
+              <span style="width:12px; height:12px; background-color:${campusColors[campus]}; border-radius:3px; border:1px solid rgba(0,0,0,0.1);"></span>
+
+              <span>${campus}</span>
+
+          </div>
+
+      `;
+
+  }
+
+  legendHTML += '</div>';
+
+  legendContainer.innerHTML = legendHTML;
+
+  
+
+  // ------------------------------
+
+  // Filtros interactivos
+
+  // ------------------------------
+
+  function fillSelect(sel,arr){
+
+    // Llena cada filtro con valores únicos y ordenados
+
+    arr=[...new Set(arr)].sort();
+
+    arr.forEach(v=>{
+
+      const o=document.createElement('option');
+
+      o.value=v;o.textContent=v;
+
+      sel.appendChild(o);
+
+    });
+
+  }
+
+  fillSelect(document.getElementById('campusFilter'),rawData.map(d=>d.campus));
+
+  fillSelect(document.getElementById('levelFilter'),rawData.map(d=>d.level));
+
+  fillSelect(document.getElementById('programFilter'),rawData.map(d=>d.program));
+
+  
+
+  // Botón para restablecer
+
+  document.getElementById('reset').onclick=()=>{
+
+    campusFilter.value=levelFilter.value=programFilter.value='All';
+
+    applyFilters();
+
+  };
+
+  
+
+  // Aplica filtros al cambiar cualquier select
+
+  [campusFilter,levelFilter,programFilter].forEach(el=>el.onchange=applyFilters);
+
+  
+
+  // Función que muestra/oculta nodos según filtros
+
+  function applyFilters(){
+
+    const c=campusFilter.value,
+
+          l=levelFilter.value,
+
+          p=programFilter.value;
+
+    svg.querySelectorAll('g').forEach(g=>{
+
+      const ok=(c==='All'||g.dataset.campus===c)&&
+
+               (l==='All'||g.dataset.level===l)&&
+
+               (p==='All'||g.dataset.program===p);
+
+      g.style.opacity= ok? '1': '0'; // oculta visualmente los que no cumplen
+
+      g.style.pointerEvents= ok? 'auto':'none'; // evita interacción en ocultos
+
+    });
+
+  }
+
+  </script>
+
+  </body>
+
+  </html>
 
